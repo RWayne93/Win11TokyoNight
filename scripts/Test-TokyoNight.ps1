@@ -1,0 +1,126 @@
+[CmdletBinding()]
+param(
+    [string]$RepositoryRoot,
+    [switch]$RepositoryOnly
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
+    $RepositoryRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
+}
+$failures = [Collections.Generic.List[string]]::new()
+$passes = [Collections.Generic.List[string]]::new()
+
+function Add-Check {
+    param([bool]$Condition, [string]$Success, [string]$Failure)
+    if ($Condition) {
+        $script:passes.Add($Success)
+    }
+    else {
+        $script:failures.Add($Failure)
+    }
+}
+
+$requiredFiles = @(
+    'install.cmd',
+    'install.ps1',
+    'Komorebi\komorebi.json',
+    'Komorebi\whkdrc',
+    'YASB (Win taskbar replace)\config.yaml',
+    'YASB (Win taskbar replace)\styles.css',
+    'Nilesoft-Shell\theme.nss',
+    'Windhawk\Taskbar.json',
+    'Windhawk\Startmenu.json',
+    'Windhawk\NotificationCenter.json',
+    'Windhawk\ShellFlyoutPositions.json',
+    'scripts\Apply-WindhawkTheme.ps1',
+    'scripts\Restore-TokyoNight.ps1'
+)
+
+foreach ($relativePath in $requiredFiles) {
+    $fullPath = Join-Path $RepositoryRoot $relativePath
+    Add-Check (Test-Path -LiteralPath $fullPath) "Found $relativePath" "Missing $relativePath"
+}
+
+foreach ($jsonFile in Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'Windhawk') -Filter '*.json') {
+    try {
+        Get-Content -Raw -LiteralPath $jsonFile.FullName | ConvertFrom-Json | Out-Null
+        $passes.Add("Valid JSON: $($jsonFile.Name)")
+    }
+    catch {
+        $failures.Add("Invalid JSON: $($jsonFile.Name): $($_.Exception.Message)")
+    }
+}
+
+$powershellFiles = @(
+    (Join-Path $RepositoryRoot 'install.ps1'),
+    (Join-Path $RepositoryRoot 'scripts\Apply-WindhawkTheme.ps1'),
+    (Join-Path $RepositoryRoot 'scripts\Restore-TokyoNight.ps1'),
+    $PSCommandPath
+)
+foreach ($file in $powershellFiles) {
+    $tokens = $null
+    $parseErrors = $null
+    [Management.Automation.Language.Parser]::ParseFile($file, [ref]$tokens, [ref]$parseErrors) | Out-Null
+    Add-Check ($parseErrors.Count -eq 0) "Valid PowerShell: $(Split-Path -Leaf $file)" "PowerShell parse errors in $file`: $($parseErrors -join '; ')"
+}
+
+$yasbTemplate = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'YASB (Win taskbar replace)\config.yaml')
+Add-Check ($yasbTemplate.Contains('__USERPROFILE__')) 'YASB user-profile token found' 'YASB config does not contain __USERPROFILE__ token'
+Add-Check ($yasbTemplate.Contains('__WALLPAPER_DIR__')) 'YASB wallpaper token found' 'YASB config does not contain __WALLPAPER_DIR__ token'
+Add-Check (-not ($yasbTemplate -match 'C:\\Users\\(MrDLi|elrond|AI2C)')) 'No hard-coded username in preferred YASB config' 'Hard-coded username remains in preferred YASB config'
+
+$whkd = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'Komorebi\whkdrc')
+Add-Check ($whkd -match 'win \+ shift \+ p\s*:\s*start ms-screenclip:') 'Screenshot hotkey is present' 'Screenshot hotkey is missing'
+
+$komorebiConfig = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'Komorebi\komorebi.json')
+Add-Check ($komorebiConfig -match '"top"\s*:\s*36') 'Komorebi top offset is 36' 'Komorebi top offset is not 36'
+Add-Check ($komorebiConfig -match '"bottom"\s*:\s*42') 'Komorebi bottom offset is 42' 'Komorebi bottom offset is not 42'
+Add-Check ($komorebiConfig -match 'CabinetWClass') 'File Explorer manage rule is present' 'File Explorer manage rule is missing'
+Add-Check ($komorebiConfig -match 'SnippingTool\.exe' -and $komorebiConfig -match 'ScreenClippingHost\.exe') 'Snipping exclusions are present' 'Snipping exclusions are incomplete'
+
+if (-not $RepositoryOnly) {
+    foreach ($command in @('komorebic.exe', 'whkd.exe', 'yasbc.exe', 'cava.exe')) {
+        Add-Check ([bool](Get-Command $command -ErrorAction SilentlyContinue)) "Command available: $command" "Command unavailable: $command"
+    }
+
+    $activeYasb = Join-Path $env:USERPROFILE '.config\yasb\config.yaml'
+    if (Test-Path -LiteralPath $activeYasb) {
+        $activeYasbText = Get-Content -Raw -LiteralPath $activeYasb
+        Add-Check (-not ($activeYasbText -match '__[A-Z_]+__')) 'Active YASB tokens were resolved' 'Active YASB config still contains installer tokens'
+    }
+    else {
+        $failures.Add("Active YASB config missing: $activeYasb")
+    }
+
+    $activeKomorebi = Join-Path $env:USERPROFILE 'komorebi.json'
+    $komorebic = Get-Command komorebic.exe -ErrorAction SilentlyContinue
+    if ($komorebic -and (Test-Path -LiteralPath $activeKomorebi)) {
+        & $komorebic.Source check -k $activeKomorebi
+        Add-Check ($LASTEXITCODE -eq 0) 'Active Komorebi config passed komorebic check' 'Active Komorebi config failed komorebic check'
+    }
+
+    $shortcutPath = Join-Path ([Environment]::GetFolderPath('Startup')) 'komorebi.lnk'
+    if (Test-Path -LiteralPath $shortcutPath) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($shortcutPath)
+        Add-Check ($shortcut.Arguments -eq 'start --whkd --clean-state') 'Komorebi autostart uses clean state' "Unexpected Komorebi autostart arguments: $($shortcut.Arguments)"
+    }
+    else {
+        $failures.Add('Komorebi startup shortcut is missing')
+    }
+}
+
+foreach ($message in $passes) {
+    Write-Host "[pass] $message" -ForegroundColor Green
+}
+foreach ($message in $failures) {
+    Write-Host "[fail] $message" -ForegroundColor Red
+}
+
+if ($failures.Count -gt 0) {
+    throw "$($failures.Count) validation check(s) failed."
+}
+
+Write-Host "All $($passes.Count) validation checks passed." -ForegroundColor Green

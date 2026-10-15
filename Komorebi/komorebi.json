@@ -1,12 +1,12 @@
 {
-  "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.38/schema.json",
+  "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.41/schema.json",
   "app_specific_configuration_path": "$Env:USERPROFILE/applications.json",
-    "window_hiding_behaviour": "Cloak",
+  "window_hiding_behaviour": "Cloak",
   "cross_monitor_move_behaviour": "Insert",
   "transparency": true,
   "transparency_alpha": 252,
-  "default_workspace_padding": 8,
-  "default_container_padding": 6,
+  "default_workspace_padding": 1,
+  "default_container_padding": 1,
   "border": true,
   "border_width": 4,
   "border_offset": 0,
@@ -16,84 +16,64 @@
     "duration": 150,
     "fps": 300,
     "style": {
-        "movement":"EaseInOutQuad",
-        "transparency": "Linear"
-      }
-},
+      "movement": "EaseInOutQuad",
+      "transparency": "Linear"
+    }
+  },
   "border_colours": {
     "single": "#e0af68",
     "unfocused": "#9aa5ce",
     "floating": "#e0af68"
   },
   "monitors": [
-    // monitor 1, index 0
     {
+      "work_area_offset": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 42
+      },
       "workspaces": [
-        {
-          "name": "I",
-          "layout": "BSP"
-        },
-        {
-          "name": "II",
-          "layout": "Grid"
-        },
-        {
-          "name": "III",
-          "layout": "HorizontalStack"
-        }
-      ]
-    },
-    // monitor 2, index 1
-    {
-      "workspaces": [
-        {
-          "name": "Home",
-          "layout": "BSP"
-        },
-        {
-          "name": "2",
-          "layout": "Grid"
-        },
-        {
-          "name": "3",
-          "layout": "HorizontalStack"
-        },
-	
+        { "name": "1", "layout": "BSP" },
+        { "name": "2", "layout": "Grid" },
+        { "name": "3", "layout": "HorizontalStack" },
+        { "name": "4", "layout": "BSP" },
+        { "name": "5", "layout": "BSP" },
+        { "name": "6", "layout": "BSP" },
+        { "name": "7", "layout": "BSP" },
+        { "name": "8", "layout": "BSP" },
+        { "name": "9", "layout": "BSP" },
+        { "name": "10", "layout": "BSP" }
       ]
     }
   ],
- "ignore_rules": [
+  "manage_rules": [
     {
-"kind": "Exe",
-"id": "explorer.exe",
-"matching_strategy": "Equals",
-},
-{
-"kind": "Exe",
-"id": "ACShadows.exe",
-"matching_strategy": "Equals",
-},
-{
-"kind": "Exe",
-"id": "Overwatch.exe",
-"matching_strategy": "Equals",
-},
-{
-"kind": "Exe",
-"id": "Photos.exe",
-"matching_strategy": "Equals",
-},
-{
-"kind": "Exe",
-"id": "PotPlayerMini64.exe",
-"matching_strategy": "Equals",
-},
-{
-"kind": "Exe",
-"id": "Files.exe",
-"matching_strategy": "Equals",
+      "kind": "Class",
+      "id": "CabinetWClass",
+      "matching_strategy": "Equals"
+    }
+  ],
+  "ignore_rules": [
+    {
+      "kind": "Exe",
+      "id": "Photos.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "Files.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "SnippingTool.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "ScreenClippingHost.exe",
+      "matching_strategy": "Equals"
+    }
+  ]
 }
-]
-}
-
-

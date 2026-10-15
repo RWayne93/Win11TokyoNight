@@ -1,0 +1,99 @@
+
+.shell powershell
+
+# ==========================================
+# HyDE-inspired Windows keybindings
+# SUPER = Windows key
+# ==========================================
+
+# Applications
+win + t : start wt.exe
+win + e : start explorer.exe
+win + b : start firefox.exe
+win + c : start code.exe
+win + shift + p : start ms-screenclip:
+
+# Window management
+win + q : komorebic close
+win + w : komorebic toggle-float
+win + j : komorebic flip-layout horizontal
+
+# Directional focus
+win + left  : komorebic focus left
+win + right : komorebic focus right
+win + up    : komorebic focus up
+win + down  : komorebic focus down
+
+# Move windows in the layout
+win + ctrl + shift + left  : komorebic move left
+win + ctrl + shift + right : komorebic move right
+win + ctrl + shift + up    : komorebic move up
+win + ctrl + shift + down  : komorebic move down
+
+# Resize focused window
+win + shift + left  : komorebic resize-axis horizontal decrease
+win + shift + right : komorebic resize-axis horizontal increase
+win + shift + up    : komorebic resize-axis vertical increase
+win + shift + down  : komorebic resize-axis vertical decrease
+
+# ==========================================
+# Workspaces (komorebi uses zero-based IDs)
+# ==========================================
+
+win + 1 : komorebic focus-workspace 0
+win + 2 : komorebic focus-workspace 1
+win + 3 : komorebic focus-workspace 2
+win + 4 : komorebic focus-workspace 3
+win + 5 : komorebic focus-workspace 4
+win + 6 : komorebic focus-workspace 5
+win + 7 : komorebic focus-workspace 6
+win + 8 : komorebic focus-workspace 7
+win + 9 : komorebic focus-workspace 8
+win + 0 : komorebic focus-workspace 9
+
+# Move window and follow it
+win + shift + 1 : komorebic move-to-workspace 0
+win + shift + 2 : komorebic move-to-workspace 1
+win + shift + 3 : komorebic move-to-workspace 2
+win + shift + 4 : komorebic move-to-workspace 3
+win + shift + 5 : komorebic move-to-workspace 4
+win + shift + 6 : komorebic move-to-workspace 5
+win + shift + 7 : komorebic move-to-workspace 6
+win + shift + 8 : komorebic move-to-workspace 7
+win + shift + 9 : komorebic move-to-workspace 8
+win + shift + 0 : komorebic move-to-workspace 9
+
+# Move window without following it
+win + alt + 1 : komorebic send-to-workspace 0
+win + alt + 2 : komorebic send-to-workspace 1
+win + alt + 3 : komorebic send-to-workspace 2
+win + alt + 4 : komorebic send-to-workspace 3
+win + alt + 5 : komorebic send-to-workspace 4
+win + alt + 6 : komorebic send-to-workspace 5
+win + alt + 7 : komorebic send-to-workspace 6
+win + alt + 8 : komorebic send-to-workspace 7
+win + alt + 9 : komorebic send-to-workspace 8
+win + alt + 0 : komorebic send-to-workspace 9
+
+# Relative workspace navigation
+win + ctrl + right : komorebic cycle-workspace next
+win + ctrl + left  : komorebic cycle-workspace previous
+
+# Maintenance
+win + shift + r : komorebic retile
+win + alt + r : komorebic reload-configuration
+
+
+# ========================================
+# HyDE-style window grouping / stacking
+# ========================================
+
+# Group windows
+win + shift + g : komorebic stack-all
+
+# Navigate within group
+win + alt + h : komorebic cycle-stack previous
+win + alt + l : komorebic cycle-stack next
+
+# Remove focused window from stack
+win + shift + u : komorebic unstack

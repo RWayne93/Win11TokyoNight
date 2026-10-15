@@ -1,0 +1,17 @@
+name: Validate installer
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  repository-checks:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate scripts and configuration
+        shell: powershell
+        run: .\scripts\Test-TokyoNight.ps1 -RepositoryOnly

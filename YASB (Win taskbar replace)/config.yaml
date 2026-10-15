@@ -2,9 +2,9 @@ watch_stylesheet: true
 watch_config: true
 debug: false
 komorebi:
-  start_command: "komorebic start --whkd"
+  start_command: "komorebic start --whkd --clean-state"
   stop_command: "komorebic stop --whkd"
-  reload_command: "komorebic stop --whkd && komorebic start --whkd"
+  reload_command: "komorebic stop --whkd && komorebic start --whkd --clean-state"
 bars:
   primary-bar:
     enabled: true
@@ -21,7 +21,7 @@ bars:
       border_color: transparent
     window_flags:
       always_on_top: true
-      windows_app_bar: true
+      windows_app_bar: false
       hide_on_fullscreen: true
     dimensions:
       width: "100%"
@@ -57,10 +57,10 @@ widgets:
       label: "<span>\udb80\udf5c</span>"
       menu_list:
       - { title: "Home", path: "~" }
-      - { title: "Downloads", path: "C:\\Users\\elrond\\Downloads"}
-      - { title: "Documents", path: "C:\\Users\\elrond\\Documents"}
-      - { title: "Pictures", path: "C:\\Users\\elrond\\Pictures"}
-      - { title: "Videos", path: "C:\\Users\\elrond\\Videos"}
+      - { title: "Downloads", path: "__USERPROFILE__\\Downloads"}
+      - { title: "Documents", path: "__USERPROFILE__\\Documents"}
+      - { title: "Pictures", path: "__USERPROFILE__\\Pictures"}
+      - { title: "Videos", path: "__USERPROFILE__\\Videos"}
       system_menu: true
       power_menu: false
       blur: true
@@ -216,7 +216,7 @@ widgets:
     type: "yasb.wallpapers.WallpapersWidget"
     options:
       label: "<span>\udb83\ude09</span>"
-      image_path: "C:\\Users\\MrDLi\\OneDrive\\Pictures\\Wallpapers\\Themes\\TokyoNight"
+      image_path: "__WALLPAPER_DIR__"
       change_automatically: false
       update_interval: 60
       gallery:

@@ -1,0 +1,10 @@
+{
+  "notificationCenter.horizontalAlignment": "tray",
+  "notificationCenter.horizontalShift": 0,
+  "actionCenter.horizontalAlignment": "same",
+  "actionCenter.horizontalShift": 0,
+  "startMenu.horizontalAlignment": "left",
+  "startMenu.horizontalShift": 0,
+  "startMenu.verticalAlignment": "top",
+  "startMenu.verticalShift": 0
+}
