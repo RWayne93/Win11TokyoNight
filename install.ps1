@@ -262,8 +262,13 @@ else {
 }
 
 if ($yasbc) {
-    if ($PSCmdlet.ShouldProcess('YASB', 'Enable autostart')) {
-        & $yasbc enable-autostart
+    if ($PSCmdlet.ShouldProcess('YASB', 'Enable reliable scheduled-task autostart')) {
+        # Remove the shortcut-based mode first so YASB cannot start twice.
+        & $yasbc disable-autostart 2>$null
+        & $yasbc enable-autostart --task
+        if ($LASTEXITCODE -ne 0) {
+            throw "YASB scheduled-task autostart could not be enabled (exit code $LASTEXITCODE)."
+        }
     }
 }
 else {
@@ -306,4 +311,5 @@ Write-Host ''
 Write-Host 'Tokyo Night core installation is complete.' -ForegroundColor Green
 Write-Host "Backups: $backupRoot"
 Write-Host 'If Windhawk listed missing mods, install those four mods and rerun scripts\Apply-WindhawkTheme.ps1 as Administrator.'
+Write-Host 'YASB is registered as a scheduled task and will start automatically at sign-in.'
 Write-Host 'Sign out once after the first installation so all Explorer, font, PATH, and shell changes load cleanly.'

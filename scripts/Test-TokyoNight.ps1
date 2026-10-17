@@ -80,6 +80,11 @@ Add-Check ($komorebiConfig -match '"bottom"\s*:\s*42') 'Komorebi bottom offset i
 Add-Check ($komorebiConfig -match 'CabinetWClass') 'File Explorer manage rule is present' 'File Explorer manage rule is missing'
 Add-Check ($komorebiConfig -match 'SnippingTool\.exe' -and $komorebiConfig -match 'ScreenClippingHost\.exe') 'Snipping exclusions are present' 'Snipping exclusions are incomplete'
 
+$installer = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'install.ps1')
+$restoreScript = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'scripts\Restore-TokyoNight.ps1')
+Add-Check ($installer -match 'enable-autostart\s+--task') 'Installer enables YASB scheduled-task autostart' 'Installer does not enable YASB scheduled-task autostart'
+Add-Check ($restoreScript -match 'disable-autostart\s+--task') 'Restore script disables YASB scheduled-task autostart' 'Restore script does not disable YASB scheduled-task autostart'
+
 if (-not $RepositoryOnly) {
     foreach ($command in @('komorebic.exe', 'whkd.exe', 'yasbc.exe', 'cava.exe')) {
         Add-Check ([bool](Get-Command $command -ErrorAction SilentlyContinue)) "Command available: $command" "Command unavailable: $command"
@@ -109,6 +114,16 @@ if (-not $RepositoryOnly) {
     }
     else {
         $failures.Add('Komorebi startup shortcut is missing')
+    }
+
+    try {
+        $yasbTask = Get-ScheduledTask -TaskName 'YASB Reborn' -ErrorAction Stop
+        $yasbAction = @($yasbTask.Actions)[0]
+        Add-Check ($yasbTask.State -in @('Ready', 'Running')) 'YASB scheduled task is enabled' 'YASB scheduled task is disabled'
+        Add-Check ($yasbAction.Execute -like '*\YASB\yasb.exe') 'YASB scheduled task launches yasb.exe' "Unexpected YASB scheduled task action: $($yasbAction.Execute)"
+    }
+    catch {
+        $failures.Add('YASB scheduled task is missing or inaccessible')
     }
 }
 

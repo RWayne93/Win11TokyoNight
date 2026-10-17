@@ -33,7 +33,7 @@ Useful installer options:
 - Correct 36 px top and 42 px bottom work-area offsets for this YASB layout.
 - File Explorer as a managed tiled window.
 - Snipping Tool and Screen Clipping Host as floating/ignored windows.
-- YASB autostart with paths expanded for the current Windows user.
+- Reliable YASB scheduled-task autostart at sign-in, with paths expanded for the current Windows user.
 - Cava so the audio visualizer widget works.
 - Flow Launcher's Tokyo Night theme.
 - Nilesoft Shell's Tokyo Night context menu theme.

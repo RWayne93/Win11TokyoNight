@@ -6,6 +6,19 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+function Test-Administrator {
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = [Security.Principal.WindowsPrincipal]::new($identity)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+if (-not (Test-Administrator) -and -not $WhatIfPreference) {
+    $arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    if ($UninstallPackages) { $arguments += ' -UninstallPackages' }
+    $process = Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList $arguments -Wait -PassThru
+    exit $process.ExitCode
+}
+
 $stateRoot = Join-Path $env:LOCALAPPDATA 'Win11TokyoNight'
 $manifestPath = Join-Path $stateRoot 'latest.json'
 if (-not (Test-Path -LiteralPath $manifestPath)) {
@@ -22,7 +35,8 @@ if ($komorebic -and $PSCmdlet.ShouldProcess('Komorebi and whkd', 'Stop')) {
 $yasbc = Get-Command yasbc.exe -ErrorAction SilentlyContinue
 if ($yasbc -and $PSCmdlet.ShouldProcess('YASB', 'Stop and disable autostart')) {
     & $yasbc.Source stop 2>$null
-    & $yasbc.Source disable-autostart
+    & $yasbc.Source disable-autostart --task
+    & $yasbc.Source disable-autostart 2>$null
 }
 
 foreach ($entry in $manifest.Entries) {
