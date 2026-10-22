@@ -76,6 +76,19 @@ if ($manifest.PSObject.Properties.Name -contains 'ThemeSettings') {
     }
 }
 
+if ($manifest.PSObject.Properties.Name -contains 'HotkeySettings') {
+    $explorerAdvancedKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+    $hotkeys = $manifest.HotkeySettings
+    if ($hotkeys.HasDisabledHotkeys) {
+        if ($PSCmdlet.ShouldProcess("$explorerAdvancedKey\DisabledHotkeys", 'Restore previous value')) {
+            New-ItemProperty -Path $explorerAdvancedKey -Name DisabledHotkeys -PropertyType ExpandString -Value ([string]$hotkeys.DisabledHotkeys) -Force | Out-Null
+        }
+    }
+    elseif ($PSCmdlet.ShouldProcess("$explorerAdvancedKey\DisabledHotkeys", 'Remove value created by Tokyo Night installer')) {
+        Remove-ItemProperty -Path $explorerAdvancedKey -Name DisabledHotkeys -ErrorAction SilentlyContinue
+    }
+}
+
 if ($manifest.PSObject.Properties.Name -contains 'DesktopWallpaper' -and $manifest.DesktopWallpaper) {
     $wallpaper = [string]$manifest.DesktopWallpaper
     if ((Test-Path -LiteralPath $wallpaper) -and $PSCmdlet.ShouldProcess($wallpaper, 'Restore desktop wallpaper')) {

@@ -93,6 +93,8 @@ $installer = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'install.p
 $restoreScript = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'scripts\Restore-TokyoNight.ps1')
 Add-Check ($installer -match 'enable-autostart\s+--task') 'Installer enables YASB scheduled-task autostart' 'Installer does not enable YASB scheduled-task autostart'
 Add-Check ($restoreScript -match 'disable-autostart\s+--task') 'Restore script disables YASB scheduled-task autostart' 'Restore script does not disable YASB scheduled-task autostart'
+Add-Check ($installer -match "DisabledHotkeys.*Reserve Win\+0-9" -or $installer -match "Reserve Win\+0-9.*DisabledHotkeys") 'Installer reserves Win+0-9 for whkd' 'Installer does not reserve Win+0-9 for whkd'
+Add-Check ($restoreScript -match 'HotkeySettings' -and $restoreScript -match 'DisabledHotkeys') 'Restore script restores Windows hotkeys' 'Restore script does not restore Windows hotkeys'
 
 if (-not $RepositoryOnly) {
     foreach ($command in @('komorebic.exe', 'whkd.exe', 'yasbc.exe', 'cava.exe')) {

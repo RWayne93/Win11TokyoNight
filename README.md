@@ -46,6 +46,8 @@ Workspaces use a single global numbering scheme instead of per-monitor numbering
 
 The checked-in `display_index_preferences` pins this setup's two identical Samsung displays by serial number, so Windows display 2 always receives workspace `2` and Windows display 3 always receives workspace `3`; Komorebi's discovery order can otherwise swap them. Those serials are hardware-specific and should be replaced when installing the configuration with different monitors. `mouse_follows_focus` is enabled, so jumping to a workspace on another display also moves the pointer there.
 
+The installer reserves Windows-key number combinations for whkd by adding `0` through `9` to Explorer's per-user `DisabledHotkeys` value. This prevents Windows' native `Win+number` taskbar shortcuts from activating an application immediately after whkd switches to an empty workspace. Any pre-existing disabled-hotkey value is preserved in the restore manifest and restored by the uninstall script.
+
 ## Windhawk finishing step
 
 Windhawk does not provide a supported command-line mod installer, so install these four mods in the Windhawk app:

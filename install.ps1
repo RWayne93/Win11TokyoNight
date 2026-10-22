@@ -174,6 +174,12 @@ $themeSettings = [pscustomobject]@{
     HasSystemUsesLightTheme = [bool]($personalization -and $personalization.PSObject.Properties.Name -contains 'SystemUsesLightTheme')
     SystemUsesLightTheme = if ($personalization -and $personalization.PSObject.Properties.Name -contains 'SystemUsesLightTheme') { [int]$personalization.SystemUsesLightTheme } else { 1 }
 }
+$explorerAdvancedKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+$explorerAdvanced = Get-ItemProperty -LiteralPath $explorerAdvancedKey -ErrorAction SilentlyContinue
+$hotkeySettings = [pscustomobject]@{
+    HasDisabledHotkeys = [bool]($explorerAdvanced -and $explorerAdvanced.PSObject.Properties.Name -contains 'DisabledHotkeys')
+    DisabledHotkeys = if ($explorerAdvanced -and $explorerAdvanced.PSObject.Properties.Name -contains 'DisabledHotkeys') { [string]$explorerAdvanced.DisabledHotkeys } else { '' }
+}
 $desktopWallpaper = (Get-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop' -Name WallPaper -ErrorAction SilentlyContinue).WallPaper
 
 foreach ($target in @(
@@ -221,6 +227,17 @@ if ($PSCmdlet.ShouldProcess('HKCU Windows theme settings', 'Enable dark app and 
     New-Item -Path $themeKey -Force | Out-Null
     New-ItemProperty -Path $themeKey -Name AppsUseLightTheme -PropertyType DWord -Value 0 -Force | Out-Null
     New-ItemProperty -Path $themeKey -Name SystemUsesLightTheme -PropertyType DWord -Value 0 -Force | Out-Null
+}
+
+if ($PSCmdlet.ShouldProcess("$explorerAdvancedKey\DisabledHotkeys", 'Reserve Win+0-9 for whkd workspace bindings')) {
+    New-Item -Path $explorerAdvancedKey -Force | Out-Null
+    $disabledHotkeys = [string]$hotkeySettings.DisabledHotkeys
+    foreach ($digit in '0123456789'.ToCharArray()) {
+        if (-not $disabledHotkeys.Contains([string]$digit)) {
+            $disabledHotkeys += $digit
+        }
+    }
+    New-ItemProperty -Path $explorerAdvancedKey -Name DisabledHotkeys -PropertyType ExpandString -Value $disabledHotkeys -Force | Out-Null
 }
 
 $firstWallpaper = Join-Path $wallpaperDirectory 'TN1.png'
@@ -286,6 +303,7 @@ if ($PSCmdlet.ShouldProcess($stateRoot, 'Save restore manifest')) {
         BackupRoot = $backupRoot
         Entries = $manifestEntries
         ThemeSettings = $themeSettings
+        HotkeySettings = $hotkeySettings
         DesktopWallpaper = $desktopWallpaper
     }
     $manifest | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $stateRoot 'latest.json') -Encoding UTF8
