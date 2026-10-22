@@ -37,47 +37,63 @@ win + shift + up    : komorebic resize-axis vertical increase
 win + shift + down  : komorebic resize-axis vertical decrease
 
 # ==========================================
-# Workspaces (komorebi uses zero-based IDs)
+# Workspaces (global numbering across monitors)
+#
+# Workspace numbers are global: 1 lives on the laptop, 2 and 3 on the two
+# external monitors, and any number that does not exist yet is created on
+# whichever monitor has focus when you press it.
 # ==========================================
 
-win + 1 : komorebic focus-workspace 0
-win + 2 : komorebic focus-workspace 1
-win + 3 : komorebic focus-workspace 2
-win + 4 : komorebic focus-workspace 3
-win + 5 : komorebic focus-workspace 4
-win + 6 : komorebic focus-workspace 5
-win + 7 : komorebic focus-workspace 6
-win + 8 : komorebic focus-workspace 7
-win + 9 : komorebic focus-workspace 8
-win + 0 : komorebic focus-workspace 9
+win + 1 : & "$HOME\.config\komorebi-workspace.ps1" -Number 1 -Mode focus
+win + 2 : & "$HOME\.config\komorebi-workspace.ps1" -Number 2 -Mode focus
+win + 3 : & "$HOME\.config\komorebi-workspace.ps1" -Number 3 -Mode focus
+win + 4 : & "$HOME\.config\komorebi-workspace.ps1" -Number 4 -Mode focus
+win + 5 : & "$HOME\.config\komorebi-workspace.ps1" -Number 5 -Mode focus
+win + 6 : & "$HOME\.config\komorebi-workspace.ps1" -Number 6 -Mode focus
+win + 7 : & "$HOME\.config\komorebi-workspace.ps1" -Number 7 -Mode focus
+win + 8 : & "$HOME\.config\komorebi-workspace.ps1" -Number 8 -Mode focus
+win + 9 : & "$HOME\.config\komorebi-workspace.ps1" -Number 9 -Mode focus
+win + 0 : & "$HOME\.config\komorebi-workspace.ps1" -Number 10 -Mode focus
 
 # Move window and follow it
-win + shift + 1 : komorebic move-to-workspace 0
-win + shift + 2 : komorebic move-to-workspace 1
-win + shift + 3 : komorebic move-to-workspace 2
-win + shift + 4 : komorebic move-to-workspace 3
-win + shift + 5 : komorebic move-to-workspace 4
-win + shift + 6 : komorebic move-to-workspace 5
-win + shift + 7 : komorebic move-to-workspace 6
-win + shift + 8 : komorebic move-to-workspace 7
-win + shift + 9 : komorebic move-to-workspace 8
-win + shift + 0 : komorebic move-to-workspace 9
+win + shift + 1 : & "$HOME\.config\komorebi-workspace.ps1" -Number 1 -Mode move
+win + shift + 2 : & "$HOME\.config\komorebi-workspace.ps1" -Number 2 -Mode move
+win + shift + 3 : & "$HOME\.config\komorebi-workspace.ps1" -Number 3 -Mode move
+win + shift + 4 : & "$HOME\.config\komorebi-workspace.ps1" -Number 4 -Mode move
+win + shift + 5 : & "$HOME\.config\komorebi-workspace.ps1" -Number 5 -Mode move
+win + shift + 6 : & "$HOME\.config\komorebi-workspace.ps1" -Number 6 -Mode move
+win + shift + 7 : & "$HOME\.config\komorebi-workspace.ps1" -Number 7 -Mode move
+win + shift + 8 : & "$HOME\.config\komorebi-workspace.ps1" -Number 8 -Mode move
+win + shift + 9 : & "$HOME\.config\komorebi-workspace.ps1" -Number 9 -Mode move
+win + shift + 0 : & "$HOME\.config\komorebi-workspace.ps1" -Number 10 -Mode move
 
 # Move window without following it
-win + alt + 1 : komorebic send-to-workspace 0
-win + alt + 2 : komorebic send-to-workspace 1
-win + alt + 3 : komorebic send-to-workspace 2
-win + alt + 4 : komorebic send-to-workspace 3
-win + alt + 5 : komorebic send-to-workspace 4
-win + alt + 6 : komorebic send-to-workspace 5
-win + alt + 7 : komorebic send-to-workspace 6
-win + alt + 8 : komorebic send-to-workspace 7
-win + alt + 9 : komorebic send-to-workspace 8
-win + alt + 0 : komorebic send-to-workspace 9
+win + alt + 1 : & "$HOME\.config\komorebi-workspace.ps1" -Number 1 -Mode send
+win + alt + 2 : & "$HOME\.config\komorebi-workspace.ps1" -Number 2 -Mode send
+win + alt + 3 : & "$HOME\.config\komorebi-workspace.ps1" -Number 3 -Mode send
+win + alt + 4 : & "$HOME\.config\komorebi-workspace.ps1" -Number 4 -Mode send
+win + alt + 5 : & "$HOME\.config\komorebi-workspace.ps1" -Number 5 -Mode send
+win + alt + 6 : & "$HOME\.config\komorebi-workspace.ps1" -Number 6 -Mode send
+win + alt + 7 : & "$HOME\.config\komorebi-workspace.ps1" -Number 7 -Mode send
+win + alt + 8 : & "$HOME\.config\komorebi-workspace.ps1" -Number 8 -Mode send
+win + alt + 9 : & "$HOME\.config\komorebi-workspace.ps1" -Number 9 -Mode send
+win + alt + 0 : & "$HOME\.config\komorebi-workspace.ps1" -Number 10 -Mode send
 
 # Relative workspace navigation
 win + ctrl + right : komorebic cycle-workspace next
 win + ctrl + left  : komorebic cycle-workspace previous
+
+# ==========================================
+# Monitors
+# ==========================================
+
+# Focus the next/previous monitor in the cycle
+win + alt + right : komorebic cycle-monitor next
+win + alt + left  : komorebic cycle-monitor previous
+
+# Move the focused window to the next/previous monitor
+win + ctrl + alt + right : komorebic cycle-move-to-monitor next
+win + ctrl + alt + left  : komorebic cycle-move-to-monitor previous
 
 # Maintenance
 win + shift + r : komorebic retile

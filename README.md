@@ -29,7 +29,7 @@ Useful installer options:
 
 ## What is configured
 
-- Komorebi and whkd with ten workspaces and the included hotkeys.
+- Komorebi and whkd with globally numbered workspaces and the included hotkeys.
 - Correct 36 px top and 42 px bottom work-area offsets for this YASB layout.
 - File Explorer as a managed tiled window.
 - Snipping Tool and Screen Clipping Host as floating/ignored windows.
@@ -40,7 +40,11 @@ Useful installer options:
 - A Tokyo Night wallpaper and Windows dark mode.
 - Backups and a restore manifest under `%LOCALAPPDATA%\Win11TokyoNight`.
 
-The supplied Komorebi configuration is a one-monitor baseline. Add monitor entries to `Komorebi\komorebi.json` before installing if the machine has a different monitor layout.
+The supplied Komorebi configuration has one monitor entry per connected display (laptop panel plus two externals). Each entry repeats the same YASB bar work-area offset, because Komorebi only applies offsets to monitors that have their own `monitors` entry. If you change the monitor count, add or remove entries in `Komorebi\komorebi.json` to match.
+
+Workspaces use a single global numbering scheme instead of per-monitor numbering. Workspace `1` starts on the laptop, `2` and `3` on the two external monitors, and pressing a number that does not exist yet creates it on the monitor you are working on. This is handled by `scripts\komorebi-workspace.ps1`, which `whkdrc` calls for every workspace hotkey: workspaces are named with their global number so they can be jumped to from any monitor, and the script records the last monitor you jumped to in `%LOCALAPPDATA%\Win11TokyoNight\last-workspace-monitor.txt`. Note that named workspaces cannot be closed with `komorebic close-workspace`, since that command only accepts empty unnamed workspaces.
+
+The checked-in `display_index_preferences` pins this setup's two identical Samsung displays by serial number, so Windows display 2 always receives workspace `2` and Windows display 3 always receives workspace `3`; Komorebi's discovery order can otherwise swap them. Those serials are hardware-specific and should be replaced when installing the configuration with different monitors. `mouse_follows_focus` is enabled, so jumping to a workspace on another display also moves the pointer there.
 
 ## Windhawk finishing step
 
@@ -67,8 +71,11 @@ The importer validates that all four mods are installed and backs up their curre
 | `Win + T` | Open Windows Terminal |
 | `Win + E` | Open File Explorer |
 | `Win + Shift + P` | Open Windows screen snipping |
-| `Win + 1` through `Win + 0` | Focus workspace |
-| `Win + Shift + 1` through `Win + Shift + 0` | Move the focused window to a workspace |
+| `Win + 1` through `Win + 0` | Focus global workspace 1-10, jumping monitors if needed |
+| `Win + Shift + 1` through `Win + Shift + 0` | Move the focused window to a global workspace and follow it |
+| `Win + Alt + 1` through `Win + Alt + 0` | Send the focused window to a global workspace without following it |
+| `Win + Alt + Left/Right` | Focus the previous/next monitor |
+| `Win + Ctrl + Alt + Left/Right` | Move the focused window to the previous/next monitor |
 | `Win + Arrow` | Focus in a direction |
 | `Win + Ctrl + Shift + Arrow` | Move a window in the layout |
 | `Win + Shift + Arrow` | Resize the focused window |

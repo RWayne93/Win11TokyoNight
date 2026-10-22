@@ -3,6 +3,11 @@
   "app_specific_configuration_path": "$Env:USERPROFILE/applications.json",
   "window_hiding_behaviour": "Cloak",
   "cross_monitor_move_behaviour": "Insert",
+  "display_index_preferences": {
+    "0": "0",
+    "1": "HCNRA18317",
+    "2": "HCPRA00513"
+  },
   "transparency": true,
   "transparency_alpha": 252,
   "default_workspace_padding": 1,
@@ -10,7 +15,7 @@
   "border": true,
   "border_width": 4,
   "border_offset": 0,
-  "mouse_follows_focus": false,
+  "mouse_follows_focus": true,
   "animation": {
     "enabled": true,
     "duration": 150,
@@ -25,7 +30,16 @@
     "unfocused": "#9aa5ce",
     "floating": "#e0af68"
   },
+  // Every connected monitor needs its own entry in this array. With a single
+  // entry, monitors 2 and 3 fall back to a default config that has no work
+  // area offset, so YASB's 35px top bar would cover tiled windows there.
+  //
+  // Workspaces use a single global numbering scheme: the laptop starts with
+  // workspace "1", the two externals start with "2" and "3". Pressing a
+  // workspace number that does not exist yet creates it on the focused
+  // monitor (see scripts/komorebi-workspace.ps1).
   "monitors": [
+    // monitor 1, index 0 - laptop panel (BOE0A5C / DISPLAY1)
     {
       "work_area_offset": {
         "left": 0,
@@ -34,16 +48,31 @@
         "bottom": 42
       },
       "workspaces": [
-        { "name": "1", "layout": "BSP" },
-        { "name": "2", "layout": "Grid" },
-        { "name": "3", "layout": "HorizontalStack" },
-        { "name": "4", "layout": "BSP" },
-        { "name": "5", "layout": "BSP" },
-        { "name": "6", "layout": "BSP" },
-        { "name": "7", "layout": "BSP" },
-        { "name": "8", "layout": "BSP" },
-        { "name": "9", "layout": "BSP" },
-        { "name": "10", "layout": "BSP" }
+        { "name": "1", "layout": "BSP" }
+      ]
+    },
+    // Windows monitor 2, config index 1 - external (SAM7094 / DISPLAY2)
+    {
+      "work_area_offset": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 42
+      },
+      "workspaces": [
+        { "name": "2", "layout": "BSP" }
+      ]
+    },
+    // Windows monitor 3, config index 2 - external (SAM7094 / DISPLAY5)
+    {
+      "work_area_offset": {
+        "left": 0,
+        "top": 36,
+        "right": 0,
+        "bottom": 42
+      },
+      "workspaces": [
+        { "name": "3", "layout": "BSP" }
       ]
     }
   ],

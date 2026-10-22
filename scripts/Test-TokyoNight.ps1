@@ -35,6 +35,7 @@ $requiredFiles = @(
     'Windhawk\NotificationCenter.json',
     'Windhawk\ShellFlyoutPositions.json',
     'scripts\Apply-WindhawkTheme.ps1',
+    'scripts\komorebi-workspace.ps1',
     'scripts\Restore-TokyoNight.ps1'
 )
 
@@ -56,6 +57,7 @@ foreach ($jsonFile in Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'Win
 $powershellFiles = @(
     (Join-Path $RepositoryRoot 'install.ps1'),
     (Join-Path $RepositoryRoot 'scripts\Apply-WindhawkTheme.ps1'),
+    (Join-Path $RepositoryRoot 'scripts\komorebi-workspace.ps1'),
     (Join-Path $RepositoryRoot 'scripts\Restore-TokyoNight.ps1'),
     $PSCommandPath
 )
@@ -73,12 +75,16 @@ Add-Check (-not ($yasbTemplate -match 'C:\\Users\\(MrDLi|elrond|AI2C)')) 'No har
 
 $whkd = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'Komorebi\whkdrc')
 Add-Check ($whkd -match 'win \+ shift \+ p\s*:\s*start ms-screenclip:') 'Screenshot hotkey is present' 'Screenshot hotkey is missing'
+Add-Check ($whkd -match 'win \+ 1\s*:.*komorebi-workspace\.ps1.*-Number 1.*-Mode focus') 'Global workspace hotkeys are present' 'Global workspace hotkeys are missing'
 
 $komorebiConfig = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'Komorebi\komorebi.json')
 Add-Check ($komorebiConfig -match '"top"\s*:\s*36') 'Komorebi top offset is 36' 'Komorebi top offset is not 36'
 Add-Check ($komorebiConfig -match '"bottom"\s*:\s*42') 'Komorebi bottom offset is 42' 'Komorebi bottom offset is not 42'
 Add-Check ($komorebiConfig -match 'CabinetWClass') 'File Explorer manage rule is present' 'File Explorer manage rule is missing'
 Add-Check ($komorebiConfig -match 'SnippingTool\.exe' -and $komorebiConfig -match 'ScreenClippingHost\.exe') 'Snipping exclusions are present' 'Snipping exclusions are incomplete'
+Add-Check ($komorebiConfig -match '"mouse_follows_focus"\s*:\s*true') 'Mouse follows workspace focus' 'Mouse-following is disabled'
+Add-Check ($komorebiConfig -match '"display_index_preferences"\s*:') 'Stable display-index preferences are present' 'Display-index preferences are missing'
+Add-Check (([regex]::Matches($komorebiConfig, '"work_area_offset"\s*:')).Count -eq 3) 'All three monitors have work-area offsets' 'Expected exactly three configured monitors'
 
 $installer = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'install.ps1')
 $restoreScript = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'scripts\Restore-TokyoNight.ps1')

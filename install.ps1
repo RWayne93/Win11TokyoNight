@@ -159,6 +159,7 @@ if (-not $SkipPackages) {
 
 $komorebiConfig = Join-Path $env:USERPROFILE 'komorebi.json'
 $whkdConfig = Join-Path $env:USERPROFILE '.config\whkdrc'
+$komorebiWorkspaceScript = Join-Path $env:USERPROFILE '.config\komorebi-workspace.ps1'
 $yasbDirectory = Join-Path $env:USERPROFILE '.config\yasb'
 $flowTheme = Join-Path $env:APPDATA 'FlowLauncher\Themes\Tokyo Night Dark.xaml'
 $wallpaperDirectory = Join-Path ([Environment]::GetFolderPath('MyPictures')) 'Win11TokyoNight'
@@ -178,6 +179,7 @@ $desktopWallpaper = (Get-ItemProperty -LiteralPath 'HKCU:\Control Panel\Desktop'
 foreach ($target in @(
     @{ Path = $komorebiConfig; Name = 'komorebi.json' },
     @{ Path = $whkdConfig; Name = '.config\whkdrc' },
+    @{ Path = $komorebiWorkspaceScript; Name = '.config\komorebi-workspace.ps1' },
     @{ Path = $yasbDirectory; Name = '.config\yasb' },
     @{ Path = $flowTheme; Name = 'FlowLauncher\Tokyo Night Dark.xaml' },
     @{ Path = $wallpaperDirectory; Name = 'Wallpapers' },
@@ -189,6 +191,7 @@ foreach ($target in @(
 
 Copy-ConfigFile -Source (Join-Path $repoRoot 'Komorebi\komorebi.json') -Destination $komorebiConfig
 Copy-ConfigFile -Source (Join-Path $repoRoot 'Komorebi\whkdrc') -Destination $whkdConfig
+Copy-ConfigFile -Source (Join-Path $repoRoot 'scripts\komorebi-workspace.ps1') -Destination $komorebiWorkspaceScript
 
 if ($PSCmdlet.ShouldProcess($yasbDirectory, 'Install YASB Tokyo Night configuration')) {
     New-Item -ItemType Directory -Path $yasbDirectory -Force | Out-Null
