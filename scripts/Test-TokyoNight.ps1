@@ -77,6 +77,9 @@ $whkd = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'Komorebi\whkdr
 Add-Check ($whkd -match 'win \+ shift \+ p\s*:\s*start ms-screenclip:') 'Screenshot hotkey is present' 'Screenshot hotkey is missing'
 Add-Check ($whkd -match 'win \+ 1\s*:.*komorebi-workspace\.ps1.*-Number 1.*-Mode focus') 'Global workspace hotkeys are present' 'Global workspace hotkeys are missing'
 
+$workspaceScript = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'scripts\komorebi-workspace.ps1')
+Add-Check ($workspaceScript -match 'SetCursorPos') 'Workspace jumps move the pointer explicitly' 'Workspace jumps do not move the pointer explicitly'
+
 $komorebiConfig = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'Komorebi\komorebi.json')
 Add-Check ($komorebiConfig -match '"top"\s*:\s*36') 'Komorebi top offset is 36' 'Komorebi top offset is not 36'
 Add-Check ($komorebiConfig -match '"bottom"\s*:\s*42') 'Komorebi bottom offset is 42' 'Komorebi bottom offset is not 42'

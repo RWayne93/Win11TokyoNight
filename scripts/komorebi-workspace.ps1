@@ -21,6 +21,17 @@ param(
 $ErrorActionPreference = 'Stop'
 $name = [string]$Number
 
+# Komorebi can focus a named workspace on another monitor without moving the
+# physical pointer, especially when Windows keeps foreground focus on the old
+# monitor. Move it explicitly after focus/move operations so Win+number behaves
+# like a Hyprland workspace jump.
+if (-not ('Win11TokyoNight.Cursor' -as [type])) {
+    Add-Type -Namespace Win11TokyoNight -Name Cursor -MemberDefinition @'
+[System.Runtime.InteropServices.DllImport("user32.dll")]
+public static extern bool SetCursorPos(int X, int Y);
+'@
+}
+
 $stateRoot = Join-Path $env:LOCALAPPDATA 'Win11TokyoNight'
 $lastMonitorFile = Join-Path $stateRoot 'last-workspace-monitor.txt'
 
@@ -62,6 +73,13 @@ switch ($Mode) {
     'focus' { & komorebic focus-named-workspace $name | Out-Null }
     'move' { & komorebic move-to-named-workspace $name | Out-Null }
     'send' { & komorebic send-to-named-workspace $name | Out-Null }
+}
+
+if ($Mode -ne 'send') {
+    $bounds = $monitors[$targetMonitor].size
+    $cursorX = [int]($bounds.left + ($bounds.right / 2))
+    $cursorY = [int]($bounds.top + ($bounds.bottom / 2))
+    [void][Win11TokyoNight.Cursor]::SetCursorPos($cursorX, $cursorY)
 }
 
 # Remember where the user is working so the next new workspace lands there.
