@@ -87,7 +87,7 @@ Add-Check ($komorebiConfig -match 'CabinetWClass') 'File Explorer manage rule is
 Add-Check ($komorebiConfig -match 'SnippingTool\.exe' -and $komorebiConfig -match 'ScreenClippingHost\.exe') 'Snipping exclusions are present' 'Snipping exclusions are incomplete'
 Add-Check ($komorebiConfig -match '"mouse_follows_focus"\s*:\s*true') 'Mouse follows workspace focus' 'Mouse-following is disabled'
 Add-Check ($komorebiConfig -match '"display_index_preferences"\s*:') 'Stable display-index preferences are present' 'Display-index preferences are missing'
-Add-Check (([regex]::Matches($komorebiConfig, '"work_area_offset"\s*:')).Count -eq 3) 'All three monitors have work-area offsets' 'Expected exactly three configured monitors'
+Add-Check ($komorebiConfig -match '"global_work_area_offset"\s*:') 'YASB clearance applies to all monitors' 'Global work-area offset is missing'
 
 $installer = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'install.ps1')
 $restoreScript = Get-Content -Raw -LiteralPath (Join-Path $RepositoryRoot 'scripts\Restore-TokyoNight.ps1')

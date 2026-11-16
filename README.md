@@ -40,7 +40,7 @@ Useful installer options:
 - A Tokyo Night wallpaper and Windows dark mode.
 - Backups and a restore manifest under `%LOCALAPPDATA%\Win11TokyoNight`.
 
-The supplied Komorebi configuration has one monitor entry per connected display (laptop panel plus two externals). Each entry repeats the same YASB bar work-area offset, because Komorebi only applies offsets to monitors that have their own `monitors` entry. If you change the monitor count, add or remove entries in `Komorebi\komorebi.json` to match.
+The supplied Komorebi configuration uses `global_work_area_offset` to apply the working 36 px top and 42 px bottom clearance to every display, including newly connected monitors. The three monitor entries assign workspace names; additional monitor entries are not required for YASB clearance. Monitor-specific work-area offsets override the global default and should only be added when a display needs different spacing.
 
 Workspaces use a single global numbering scheme instead of per-monitor numbering. Workspace `1` starts on the laptop, `2` and `3` on the two external monitors, and pressing a number that does not exist yet creates it on the monitor you are working on. This is handled by `scripts\komorebi-workspace.ps1`, which `whkdrc` calls for every workspace hotkey: workspaces are named with their global number so they can be jumped to from any monitor, and the script records the last monitor you jumped to in `%LOCALAPPDATA%\Win11TokyoNight\last-workspace-monitor.txt`. Note that named workspaces cannot be closed with `komorebic close-workspace`, since that command only accepts empty unnamed workspaces.
 
