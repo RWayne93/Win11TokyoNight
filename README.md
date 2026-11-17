@@ -27,6 +27,18 @@ Useful installer options:
 .\install.ps1 -NoStart                        # configure without launching the bars
 ```
 
+## Update or recover YASB
+
+The Tokyo Night bar was verified to start and connect to Komorebi on YASB 2.0.8. The installer uses WinGet's stable `AmN.yasb` package for new installs and leaves existing installs in place. To update only the bar, run the following in PowerShell (as administrator if YASB is installed under Program Files):
+
+```powershell
+winget upgrade --exact --id AmN.yasb --source winget
+```
+
+Back up `%USERPROFILE%\.config\yasb` before updating. If WinGet cannot download the installer, use the matching architecture and installation scope from the [official YASB releases](https://github.com/amnweb/yasb/releases). Keep the existing theme files when upgrading.
+
+If the bar disappears after a driver update or reboot, check whether YASB is running. If it has stopped, start the existing sign-in task with `Start-ScheduledTask -TaskName 'YASB Reborn'`. If the bar still exits, check `%USERPROFILE%\.config\yasb\yasb.log` for the startup error. The Komorebi work-area spacing is separate and does not need to be reset.
+
 ## What is configured
 
 - Komorebi and whkd with globally numbered workspaces and the included hotkeys.
